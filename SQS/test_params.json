@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey": "QName",
+    "ParameterValue": "SQSTest1WithDLQ"
+  }, 
+  {
+    "ParameterKey": "UseDeadLetterQueue",
+    "ParameterValue": "true"
+  },
+  {
+	"ParameterKey": "DeadLetterQName",
+	"ParameterValue": "DLQTest1"
+  },
+  {
+	"ParameterKey": "ReceiveMessageWaitTime",
+	"ParameterValue": "20"
+  }
+]
