@@ -1,0 +1,1 @@
+aws cloudformation create-stack --stack-name mytests3stack --template-body file://C:/path_to_yaml/S3/bucket_min_config.yaml --parameters file://C:/path_to_json/S3/test_params_min.json

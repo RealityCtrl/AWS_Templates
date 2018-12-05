@@ -1,0 +1,1 @@
+aws cloudformation create-stack --stack-name mytestsqsstack --template-body file://C:/path_to_yaml/SQS/infrastructure_policies.yaml --parameters file://C:/path_to_json/SQS/test_params_policy.json
