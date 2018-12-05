@@ -1,2 +1,2 @@
-# AzureDevOps
-Azure Dev Ops Training
+# AWS Cloudformation templates
+templates for creating AWS infrastructure, IAM and policies
