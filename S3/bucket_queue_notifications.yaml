@@ -18,5 +18,7 @@ Resources:
       BucketName: !Join [ "-", [ !Ref AppName, !Ref Environment ] ]
       NotificationConfiguration:
         QueueConfigurations:
-          Event: s3:CreatedObject:*
-          Queue: !Join [":",[arn:aws:sqs,!Ref Region, !Ref AccountID, !Ref QueueName]] 
+          - Event: s3:ObjectCreated:*
+            Queue: arn:aws:sqs:eu-west-1:838188513541:sqsnotifications-sndbx
+            #!Join [":",["arn:aws:sqs",!Ref Region, !Ref AccountID, !Join ["-", [!Ref QueueName, !Ref Environment]]]]
+            

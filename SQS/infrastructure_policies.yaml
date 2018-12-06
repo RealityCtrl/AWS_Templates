@@ -18,14 +18,6 @@ Parameters:
     Default: 262144
     MinValue: 1024
     MaxValue: 262144
-  KMSKey:
-    Type: String
-    Default: AWS::NoValue
-  KmsDataReusePeriod:
-    Type: Number
-    Default: 300
-    MinValue: 60
-    MaxValue: 86400
   RetentionPeriod:
     Type: Number
     Default: 345600
@@ -48,36 +40,18 @@ Parameters:
 Conditions:
   CreateDLQ: !Equals [ !Ref UseDeadLetterQueue, true ]
 Resources:
-
-  SourceBucket:
-    Type: AWS::S3::Bucket
-    DependsOn:
-      - MyQueue
-    Properties:
-      BucketName: !Join [ "-", [ !Ref AppName, !Ref Environment ] ]
-      NotificationConfiguration:
-        QueueConfigurations:
-          - Event: s3:ObjectCreated:*
-            Queue:
-              Fn::GetAtt: 
-                - "MyQueue"
-                - "Arn"
-            
+           
   MyQueue:
     Type: AWS::SQS::Queue
     Properties:
       DelaySeconds: 
         Ref: Delay
-      KmsMasterKeyId: 
-        Ref: KMSKey
-      KmsDataKeyReusePeriodSeconds: 
-        Ref: KmsDataReusePeriod
       MaximumMessageSize: 
         Ref: MaxSize
       MessageRetentionPeriod: 
         Ref: RetentionPeriod
       QueueName: 
-        Ref: !Join [ "-", [ !Ref AppName, !Ref Environment ] ]
+        !Join [ "-", [ !Ref AppName, !Ref Environment ] ]
       ReceiveMessageWaitTimeSeconds: 
         Ref: ReceiveMessageWaitTime
       RedrivePolicy:
@@ -98,7 +72,7 @@ Resources:
     Condition: CreateDLQ
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Join [ "-", [ !Ref AppName, !Ref Environment,  DLQ] ]
+      QueueName: !Join [ "-", [ !Ref AppName, !Ref Environment,  "DLQ"] ]
 
   QueuePolicy:
     Type: AWS::SQS::QueuePolicy
@@ -118,14 +92,8 @@ Resources:
               Fn::GetAtt: 
                 - "MyQueue"
                 - "Arn"
-            Condition:
-              ArnLike:
-                # Static BucketName used to avoid circular dependency with S3 bucket
-                aws:SourceArn: !Join [ "", ["arn:aws:s3:*:*:", !Join [ "-", [ !Ref AppName, !Ref Environment ] ] ] ]
       Queues:
-        - Fn::GetAtt: 
-            - "MyDeadLetterQueue"
-            - "Arn"
+        - Ref: MyQueue
 
 Outputs: 
   QueueURL: 
